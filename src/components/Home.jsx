@@ -1,5 +1,7 @@
 import { useState } from "react"
 import SignupForm from "./SignupForm"
+import Signup from "./Signup"
+
 import Login from "./Login"
 import { Button } from "react-bootstrap"
 
@@ -10,7 +12,7 @@ export default function Home (){
   <>
    {   (isMember)
       ?  <Login />
-      :  <SignupForm />
+      :  <Signup />
    
       }
          <Button onClick = {()=> setIsMember(!isMember)}> Switch Form</Button>

@@ -2,31 +2,60 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState } from "react";
 
+import { getAuth,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup } from "firebase/auth";
+import { initializeApp } from "firebase/app";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBTJy0_LkcJTHe6XU5WNdyhbPdwFnMpqzQ",
+  authDomain: "timber-login-js.firebaseapp.com",
+  projectId: "timber-login-js",
+  storageBucket: "timber-login-js.appspot.com",
+  messagingSenderId: "210252509727",
+  appId: "1:210252509727:web:0bf4b71fa2b1fd5bae5b2a",
+  measurementId: "G-WQ9VZS6X9Q",
+};
+
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
 export default function SignupForm() {
-  const [firstName,setFirstName] = useState()
-  const [lastName,setLastName] = useState()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [user, setUser] = useState()
 
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const handleForm = e=>{
-    const newValue = e.target.value.trim()
-    console.log(e.target,newValue)
-
+  const handleSignup = async (e) => {
+    e.preventDefault()
+    const results = await createUserWithEmailAndPassword(auth,email,password)
+    .catch(err=>alert(err))
+    setUser(results.user)
   }
+
+
+ const signInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider()
+  const results = await signInWithPopup(auth,provider)
+  .catch(alert)
+  setUser(results.user)
+}
+
+  if (user) {
+    return <h2>Welcome user {user.uid}</h2>
+  }
+
   return (
     <>
-      <Form>
-        <Form.Group className = "mb-3">
-          <Form.Label>First Name</Form.Label>
-          <Form.Control className="mb-3" type = "text" placeholder = "Enter Your First Name" onChange={handleForm}/>
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Last Name</Form.Label>
-          <Form.Control type="text" placeholder= "Enter Your Last Name" onChange={handleForm}/>
-        </Form.Group>
+      <Form onSubmit = {handleSignup}>
         <Form.Group className="mb-3">
           <Form.Label>Email Address</Form.Label>
-          <Form.Control type="email" placeholder="Enter Email" onChange={handleForm} />
+          <Form.Control
+            type="email"
+            placeholder="Enter Email"
+            onChange={e=> setEmail(e.target.value)}
+            value = {email}
+          />
           <Form.Text>We'll never share your email with anyone else.</Form.Text>
         </Form.Group>
         <Form.Group className="mb-3">
@@ -34,13 +63,22 @@ export default function SignupForm() {
           <Form.Control
             type="password"
             placeholder="Enter Password"
-            onChange={handleForm}
+            value = {password}
+            onChange={e => setPassword(e.target.value)}
           ></Form.Control>
           <Form.Group className="mb-3">
-            <Button variant="success" size = "lg" type = "submit" onChange={handleForm}>Submit</Button>
-          </Form.Group> 
+            <Button
+              variant="success"
+              size="lg"
+              type="submit"
+
+            >
+              Sign Up
+            </Button>
+          </Form.Group>
         </Form.Group>
       </Form>
+      <Button variant = "dark" size = "lg" onClick={signInWithGoogle}>Sign in with Google</Button>
     </>
   );
 }

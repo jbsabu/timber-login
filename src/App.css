@@ -21,7 +21,7 @@ footer {
 
 .login-container{
   background-color: var(--color-white);
-  /* padding: 5px; */
+  padding: 5px;
   /* border-radius: 5px; */
   backdrop-filter: blur(2px);
   /* opacity: var(--opacity); */
